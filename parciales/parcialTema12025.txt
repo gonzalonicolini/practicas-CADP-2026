@@ -1,0 +1,113 @@
+program parcialTema12025;
+const
+	dimF = 300;
+type
+	subrango = 1..dimF;
+	
+	viajes = record
+		codId:integer;
+		fecha:string;
+		metodo:string;
+		dni:integer;
+		codVuelo:subrango;
+		cantPasajes:integer;
+		montoTotal:real;
+	end;
+	
+	lista = ^nodo;
+	
+	nodo = record
+		dato:viajes;
+		sig:lista;
+	end;
+	
+	vectorAsientos = array [1..dimF] of integer;
+	
+procedure leerViaje(var v:viajes);
+begin
+	readln(v.dni);
+	if (v.dni <> -1) then begin
+		readln(v.codId);
+		readln(v.fecha);
+		readln(v.metodo);
+		readln(v.codVuelo);
+		readln(v.cantPasajes);
+		readln(v.montoTotal);
+	end;
+end;
+
+procedure insertarOrdenado(var lV:lista; dato:viajes);
+var
+	nue,act,ant:lista;
+begin
+	new(nue);
+	nue^.dato := dato;
+	nue^.sig := NIL;
+	act := lV;
+	while (act <> NIL) and (act^.dato.dni < dato.dni) do begin
+		ant := act;
+		act := act^.sig;
+	end;
+	if (act <> lV) then begin
+		ant^.sig := nue;
+		nue^.sig := act;
+	end
+	else
+		lV:=nue;
+end;
+	
+procedure cargarLista(var lV:lista);
+var
+	v : viajes;
+begin
+	leerViaje(v);
+	while (v.dni <> -1) do begin
+		insertarOrdenado(lV,v);
+		leerViaje(v);
+	end;
+end;
+
+procedure inicializarVectorAsientos(var vA:vectorAsientos); // se dispone
+begin
+end;
+
+procedure procesarLista(lV:lista;var vA:vectorAsientos);
+var
+	dniAct:integer;
+	montoTotal:real;
+begin
+	while (lV <> NIL) do begin
+		dniAct:=lV^.dato.dni;
+		montoTotal:=0;
+		while (lV <> NIL) and (lV^.dato.dni = dniAct) do begin
+			if (lV^.dato.metodo = 'online') then
+				montoTotal := montoTotal + lV^.dato.montoTotal;
+			vA[lV^.dato.codVuelo] := vA[lV^.dato.codVuelo] - lV^.dato.cantPasajes;
+			lV:=lV^.sig;
+		end;
+		writeln('el monto total del dni: ',dniAct,' es de: ',montoTotal);
+	end;
+end;
+
+procedure informarAsientos(vA:vectorAsientos);
+var
+	cantidad,i:integer;
+begin
+	cantidad:=0;
+	for i:=1 to dimF do begin
+		if (vA[i] = 0) then
+			cantidad:=cantidad+1;
+	end;
+	writeln('la cantidad de vuelos que quedaron sin asientos libres es de: ',cantidad);
+end;
+	
+var
+	listaViajes : lista;
+	vA : vectorAsientos;
+begin
+	listaViajes := NIL;
+	cargarLista(listaViajes);
+	inicializarVectorAsientos(vA); // se dispone
+	procesarLista(listaViajes,vA);
+	informarAsientos(vA);
+end.

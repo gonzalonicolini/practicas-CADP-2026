@@ -1,0 +1,233 @@
+program parcial;
+TYPE
+	gen = 1..20;
+	calificacion = 0..10;
+	meses = 1..12;
+	
+	vec = array [meses] of calificacion; 	
+	
+	libros = record
+		codigo:integer;
+		titulo:string;
+		autor:string;
+		codGen:gen;
+		anio:integer;
+		cali:vec;
+	end;
+	
+	lista = ^nodo;
+	
+	nodo = record
+		dato:libros;
+		sig:lista;
+	end;
+	
+	vCont = array [gen] of integer;
+
+procedure generarLista(var l:lista); // SE DISPONE
+
+
+procedure inicializar(var vc:vCont; var max1,max2:real);
+var
+	i:gen;
+begin
+	for i:= 1 to 20 do
+		vc[i] := 0;
+	max1:= -999;
+	max2:= -999;
+end;
+
+function cumple(num:integer):boolean;
+var
+	digito:integer;
+	ok:boolean;
+	par:integer;
+begin
+	par:= 0;
+	ok:= false;
+	while (num <> 0) AND (par <= 4) do begin
+		dig:= num MOD 10;
+		if(dig MOD 2 = 0) then
+			par:= par + 1;
+		num:= num DIV 10;
+	end;
+	if(par = 4) then
+		ok:= true;
+	cumple:= ok;
+end;
+
+
+procedure insertarOrdenado(var l2:lista; li:lbros);
+var
+	ant,act,nue:lista;
+begin
+	new(nue);
+	nue^.dato:= li;
+	ant:= l2;
+	act:= l2;
+	while(act <> nil) and (li.autor > act^.dato.autor) do begin
+		ant:= act;
+		act:= act^.sig;
+	end;
+	if(act = l)then
+		l2:= nue
+	else
+		ant^.sig:= nue;
+	nue^.sig:= act;
+end;
+
+procedure recorrerLista(l:lista; var l2:lista);
+var
+	vc:vCont; //INCISO A. INICIALIZAR.
+	
+	i:meses; // inciso B
+	sumTot:integer; // inicializar en 0 por cada nodo INCISO B
+	cont:integer; // inicializar en 0 por cada nodo INCISO B
+	promedio:real; // se asigna (sumTot / 12) INCISO B
+	max1,max2:real; //inicializar muy bajo INCISO B
+	titulo1,titulo2:string;// INCISO B	
+
+BEGIN
+	inicializar(vc,max1,max2);
+	while(l <> nil) do begin
+		sumTot:= 0;
+		cont:= 0;
+		{inciso A}
+		if(l^.dato.anio < 2000) then
+			vc[l^.dato.codGen] := vc[l^.dato.codGen] + 1;
+		
+		{inciso B}
+		for i:= 1 to 12 do begin
+			sumTot:= sumTot + l^.dato.cali[i];
+			if(l^.dato.cali[i] > 0) then
+				cont:= cont + 1;
+		end;
+		if(cont > 6) and (sumTot > 0) then begin
+			promedio:= sumTot/12;
+			if(promedio > max1) then begin
+				max2:=max1;
+				max1:= promedio;
+				titulo2:= titulo1;
+				titulo1:= l^.dato.titulo
+			end
+			else if(promexio > max2) then begin
+				max2:= promedio;
+				titulo2:= l^.dato.titulo;
+			end;
+		end;
+		
+		{inciso C}
+		
+		if(cumple(l^.dato.codigo = 4) AND (l^.dato.anio > 1995) AND (l^.dato.anio < 2005) )then
+			insertarOrdenado(l2,l^.dato);
+		l:= l^.sig;
+	end;
+	
+	for i:= 1 to 20 do 
+		write(vc[i]);
+	writeln('El primer libro con mejor calificacion promedio fue: ',titulo1);
+	writeln('El segundo libro con mejor calificacion promedio fue: ',titulo2);	
+end;
+
+procedure busqueda(l2:lista);
+var
+	cod:integer;
+	ok:boolean;
+begin
+	ok:= false;
+	read(cod);
+	while (l2 <> nil) AND (ok = false) do begin
+		if(l2^.dato.codigo = cod) then begin
+			write('libro encontrado, es el titulo: ',l2^.dato.titulo);
+			ok:=true;
+		end
+		else
+			l2:=l2^.sig;
+	end;
+end;
+
+var
+	l:lista; //se dispone
+	l2:lista; //inciso C
+begin
+	l:= nil;
+	l2:= nil;
+	generarLista(l); // SE DISPONE
+	recorrerLista(l,l2);
+	busqueda(l2);
+end.	
+	
+	
+{Una libreria DISPONE DE INFORMACION(disponemos de una lista) de los libros 
+vendidos durante el año 2023. 
+De cada LIBRO SE CONOCE:
+codigo del libro,
+titulo
+,autor
+,codigo de genero(1..20) 
+, año de publicacion y 
+la calificacion obtenida en cada uno de los 12 meses del año. 
+(tipo de dato VECTOR de enteros)
+
+La calificacion es numerica de 0 a 10, donde 0 significa que el libro 
+no ha sido vendido ese mes
+
+Se solicita
+
+a.Informar para cada genero la cantidad de libros publicados antes del año 2000
+
+	Los generos van de 1 a 20... Vector contador 
+	
+	si(el año es antes que el 2000 )
+		sumo 1 a mi vector contador en el campo del genero del libro leido
+
+b. Informar los titulos de los 2 libros con mejor calificacion PROMEDIO en los meses 
+en los que se vendieron. 
+Solo deben considerarse los libros que se vendieron en mas de 6 meses 
+
+	i:meses;
+	sumTot:integer; // inicializar en 0 por cada nodo
+	cont:integer; // inicializar en 0 por cada nodo
+	promedio:real; // se asigna (sumTot / 12)
+	max1,max2:real; //inicializar muy bajo
+	titulo1,titulo2:string;
+	
+	
+	para un indice de 1 a 12 HACER
+		sumaTotal= sumatotal + el campo del vector que esta contenido en el nodo
+		si(el campo de mi vector es > 0)
+			sumo a un contador
+	si(contador > 6) y (sumatotal > 0)
+		promedio = sumatotal/12
+		CALCULAR MAXIMOS
+			(max1y max2 se comparan con el promedio)
+				si promedio > max1)
+					actualizo maximos
+					guardo el titulo de libro
+	
+c. implementar e invocar un modulo que genere una lista con los libros cuyo codigo 
+posee exactamente 4 digitos pares 
+y haya sido publicado entre 1995 y 2005. La lista debe estar ordenada por autor
+
+	nuevaLista de tipo lista
+	si(tiene 4 digitos pares) y(fue publicado despues de 1995) y (antes de 2005)entonces
+		inserto ORDENADO
+
+d. ingresar un codigo de libro y buscar su titulo en la lista generada en el inciso C
+	leo un numero y busco desordenado en mi nueva lista
+
+	
+{ACLARACION EXTRA DE ACCESOS (En general para pascal) }
+
+L = LISTA
+L^ = PUNTERO A NODO
+L^.DATO = REGISTRO LIBRO
+L^.DATO.CODGEN = ENTERO
+L^.DATO.CALI[INDICE] = LO QUE CONTIENE EL VECTOR
+L^.DATO.CALI[INDICE].ANIO
+L^.DATO.CALI[INDICE].INSTANCIA
+
+
+}
+
+
