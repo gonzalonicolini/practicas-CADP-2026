@@ -1,0 +1,165 @@
+{Una tienda virtual necesita un programa para administrar la info de sus clientes. De cada cliente se lee, nro, dni, apellido y nombre, fecha de nac (dia,mes,año), nivel (1..5) y puntaje. La lectura finaliza
+cuando se lee el cliente con 22333444, que debe procesarse
+
+a) generar una estructura que contenga numero, apellido y nombre de aquelos clientes con dni compuesto solo por impares
+b) informar los niveles con maytor y menor puntaje acumulado por los clientes nacidos despues del año 1990
+c) implementar un mod que elimine de la estructura generada, la info relacionamda a un nro de cliente recibido por parametro. Tener en cuenta que puede existir o no}
+
+
+program parcial 
+type
+    rnivel=1..5
+
+    cliente = record
+        nro:integer
+        dni:integer
+        dianac:integer
+        mesnac:integer
+        añonac:integer
+        nivel:rnivel
+        apellido:string
+        nombre:string
+        puntaje:integer
+    end;
+
+    clienteLista = record
+        nro:integer
+        apellido:string
+        nombre:string
+    end;
+
+    vCont = array [rnivel] of integer;
+
+    lista = ^nodo;
+
+    nodo = record
+        dato:clienteLista
+        sig:lista
+    end;
+
+procedure leer (var c:cliente)
+begin
+    readln(c.nro)
+    readln(c.dni)
+    readln(c.dianac)
+    readln(c.mesnac)
+    readln(c.anionac)
+    readln(c.nivel)
+    readln(c.apellido)
+    readln(c.nombre)
+end;
+
+procedure inicializarVCont (var vc:vCont)
+var
+    i:rnivel
+begin
+    for i := 1 to 5 do
+        vc[i]:=0
+end;
+
+procedure agregarAdelante (var L:lista; cl:clienteLista)
+var
+    nue:lista
+begin
+    new(nue)
+    nue^.dato:=cl
+    nue^.sig:=l
+    l:=nue;
+end
+
+
+procedure maxmin (vc:vCont)
+var
+    nivelmin,nivelmax,i:rnivel
+    min,max:integer
+begin
+    min:=999
+    max:=-999
+    for i:= 1 to 5 do
+    begin
+        if (max < vc[i]) then
+        begin
+            max:=vc[i]
+            nivelmax:=i
+        end
+    
+        if (min > vc[i]) then
+        begin
+            max:=vc[i]
+            nivelmax:=i
+        end
+    end;
+    writeln (nivelmax,nivelmin)
+end;
+
+function cumple (dni:integer):boolean
+var
+    dig, par:integer
+begin
+    par:=0
+    while (dni <> 0 ) and (par = 0) do
+    begin
+        dig:= dni mod 10
+        if (dig mod 2 = 0) then
+            par := par +1
+        dni:= dni div 10
+    end
+    cumple := (par = 0)
+end
+
+
+procedure cargarLista (var l:lista, vc:vcont)
+var
+    cl:clienteLista
+    c:cliente
+begin
+    repeat
+        leer(c)
+        if (cumple(c.dni)) then begin
+            cl.nombre:=c.nombre
+            cl.apellido:=c.apellido
+            cl.nro:=c.nro
+            agregarAdelante (L, cl)
+        end;
+        if (c.añonac>1990) then
+            vc[c.nivel] := vc[c.nivel] + c.puntaje
+      
+    until (c.dni = 22333444 )
+    maxmin(vc)
+end;
+
+procedure eliminar (var l:lista; num:integer)
+var
+    ant, act: lista
+begin
+    act:=L
+    ant:=l
+    while (act <> nil ) and (act^.dato.nro <> nro) do 
+    begin
+        ant:=act
+        act:=act^.sig
+    end
+    if (act <> nil) then 
+    begin
+        if (act = ant) then 
+            L:= L^.sig
+        else
+            ant^.sig:=act^.sig
+        dispose(act)
+    end
+end
+
+//pp
+
+var
+num:integer
+l:lista
+vc:vcont
+
+begin
+l:=Nil
+inicializarVcont(vc)
+cargarLista(l,vc)
+readln(num)
+eliminar(l,num)
+end;
