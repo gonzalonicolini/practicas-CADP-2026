@@ -4,7 +4,7 @@ type
     vector = array[1..dimF] of integer;
 
 
-procedure incisoA(v:vector: integer);
+procedure incisoA(v:vector; dimL: integer);
 var
     x: integer;
 begin
