@@ -42,4 +42,34 @@ begin
 end;
 
 
--completar el resto-
+function elementoMaximo(v:vector): integer; //inciso E
+var
+    i, max: integer;
+begin
+    max := 0;
+    for i := 1 to dimF do
+    begin
+        if (v[i] > max) then
+        begin
+            max := v[i];
+            elementoMaximo := i;
+        end;
+    end;
+end;
+
+
+function elementoMinimo(v:vector): integer; //inciso F
+var
+    i, min: integer;
+begin
+    min := 99999;
+    for i := 1 to dimF do    
+    begin
+        if (v[i] < min) then
+        begin
+            min := v[i];
+            elementoMinimo := i;
+        end;
+    end;
+end;
+
