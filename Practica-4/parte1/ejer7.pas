@@ -18,7 +18,7 @@ procedure imprimir (v:vector);
 var
     x, max, dig: integer;
 begin
-    max:=0
+    max:=0;
 
     for x:=0 to 9 do
     begin

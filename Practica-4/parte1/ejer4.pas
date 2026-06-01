@@ -4,6 +4,9 @@ const
 type
     vector = array[1..dimF] of integer;
 
+begin
+end.
+
 function posicion(v:vector; x: integer): integer; //inciso A
 var
     i: integer;
