@@ -12,12 +12,15 @@ type
 
 procedure leerViaje(var r: Rviaje);
 begin
-    writeln('Ingrese el dia del viaje: ');
-    readln(r.dia);
-    writeln('Ingrese el monto del viaje: ');
-    readln(r.monto);
     writeln('Ingrese la distancia del viaje: ');
     readln(r.distancia);
+    if (r.distancia <> 0) then
+    begin
+        writeln('Ingrese el dia del viaje: ');
+        readln(r.dia);
+        writeln('Ingrese el monto del viaje: ');
+        readln(r.monto);
+    end;
 end;
 
 
@@ -40,13 +43,12 @@ end;
 
 procedure recorrerVector(v: vector; diml: integer);
 var
-    montoTotal,DistanciaTotal: real;
+    montoTotal: real;
     r: Rviaje;
     i: integer;
     vc: vcontador;
 begin
     montoTotal := 0;
-    DistanciaTotal := 0;
     r.monto := 99999; // Inicializo un monto alto porque el inciso me pide el viaje con menor monto
 
     for i := 1 to 31 do
@@ -56,10 +58,10 @@ begin
     for i := 1 to diml do
     begin
         montoTotal := montoTotal + v[i].monto;
-        DistanciaTotal := DistanciaTotal + v[i].distancia;
+        
 
         if (v[i].monto < r.monto) then
-            r := v[i]; // Guardo el viaje con menor monto
+            r := v[i]; // Me guardo TODO el viaje (incluye la distancia y el dia)
 
         vc[v[i].dia] := vc[v[i].dia] + 1; // Incremento el contador del día del viaje
     end;
@@ -78,7 +80,7 @@ var
     pos: integer;
 begin
     pos := 1;
-    while (pos < diml) do
+    while (pos <= diml) do
     begin
         if (v[pos].distancia = 100) then
         begin
